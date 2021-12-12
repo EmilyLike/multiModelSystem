@@ -49,7 +49,7 @@ export default class Home extends Vue {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    handleClose(done):void {
+    handleClose(done:any):void {
       ElMessageBox.confirm('Are you sure to close this dialog?')
         .then(() => {
           done();

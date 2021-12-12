@@ -3,16 +3,25 @@ import Layout from '@/components/layout.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    redirect: '/record',
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/login.vue'),
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: () => ({ path: '/login' }),
+  },
+  // {
+  //   path: '/',
+  //   redirect: '/record',
+  // },
   {
     path: '/',
     component: Layout,
     // redirect: '/record',
     children: [{
       path: '/record',
-      name: 'record',
+      name: 'Record',
       meta: {
         title: '录像采集',
         ignoreAuth: true,

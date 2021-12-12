@@ -18,6 +18,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 )
 export default class Home extends Vue {}
 </script>
-<style scoped>
+<style scoped="scss">
 
 </style>
