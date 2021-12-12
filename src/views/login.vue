@@ -23,7 +23,7 @@
         </el-form-item>
         <el-form-item prop="veriCode">
           <el-input
-            style="width:68%;padding-right:2%;"
+            style="width:65%; margin-right:1%;"
             type="password"
             v-model="form.veriCode"
             placeholder="请输入验证码">
@@ -32,8 +32,12 @@
             </template>
           </el-input>
           <el-button
-          style="width:28%;"
-          @click="getValidCode">获取验证码</el-button>
+            style="width:34%;color:#808080;"
+            @click="sendCode"
+            :disabled="form.disabled"
+            >
+            {{form.btnText}}
+          </el-button>
         </el-form-item>
       </el-form>
       <div class="system-button">
@@ -49,6 +53,7 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -63,10 +68,14 @@ export default {
       phoneNumber: '',
       veriCode: '',
       code: '',
+      time: 60,
+      btnText: '发送验证码',
+      disabled: false,
     });
 
     const validateNumber = (rule, value, callback) => {
       const reg = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+      if (!value) callback(new Error('请输入手机号'));
       if (!value.match(reg)) {
         callback(new Error('请输入正确的手机号码'));
       } else {
@@ -75,6 +84,7 @@ export default {
     };
 
     const validCode = (rule, value, callback) => {
+      if (!value) callback(new Error('请输入验证码'));
       if (value !== form.code) {
         callback(new Error('请输入正确的验证码'));
       } else {
@@ -91,7 +101,9 @@ export default {
 
     const submit = () => {
       formRef.value.validate(async (valid) => {
-        if (!valid) return;
+        if (!valid) {
+          return;
+        }
         await store.dispatch('EDIT_USER_INFO', form);
         router.push({
           path: '/record',
@@ -99,17 +111,42 @@ export default {
       });
     };
 
-    const getValidCode = () => {
-      form.code = '123';
-      console.log('here will send a valid code', form.code);
-    };
     return {
       form,
       rules,
       formRef,
       submit,
-      getValidCode,
     };
+  },
+  methods: {
+
+    getValidCode() {
+      this.form.code = '123';
+    },
+
+    sendCode() {
+      this.$refs.formRef.validateField('phoneNumber', (errorMessage) => {
+        if (!errorMessage) {
+          // 1.时间开始倒数
+          // 2.按钮进入禁用状态
+          // 3.如果倒计时结束 按钮恢复可用状态 按钮文字变为重新发送, 时间重置
+          // 4.倒计时的过程中 按钮文字为 多少s后重新发送
+          const timer = setInterval(() => {
+            this.form.time -= 1;
+            this.form.btnText = `${this.form.time}s后重新发送`;
+            this.form.disabled = true;
+            if (this.form.time === 0) {
+              this.form.disabled = false;
+              this.form.btnText = '重新发送';
+              this.form.time = 60;
+              clearInterval(timer);
+            }
+          }, 1000);
+          ElMessage.success('发送验证码成功');
+          this.getValidCode();
+        }
+      });
+    },
   },
 };
 </script>
