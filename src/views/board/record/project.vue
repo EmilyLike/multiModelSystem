@@ -2,17 +2,17 @@
   <div class="project-board">
     <div class="content-board">
       <div class="content-inter">
-              <div class="content-input" v-if="showInput">
-        <div v-for="(item, index) in questionList" :key="index">
-          <el-input
-            class="lyric-input"
-            v-model="item.question"
-            placeholder="| Please input"
-            ref="refChartBox"
-            style="border:0;"
-            @keyup.enter="addRow(index)" />
+        <div class="content-input" v-if="showInput">
+          <div v-for="(item, index) in questionList" :key="index">
+            <el-input
+              class="lyric-input"
+              v-model="item.question"
+              placeholder="| Please input"
+              ref="refChartBox"
+              style="border:0;"
+              @keyup.enter="addRow(index)" />
+          </div>
         </div>
-      </div>
       <div class="content-lyric" v-else>
         <div
         :class="`sentence-${index}`"
@@ -79,11 +79,13 @@ import NewItem from '@/components/newItem.vue';
   },
 )
 export default class Home extends Vue {
+  // TODO: $ref 调用
+  // TODO: 歌词区样式
+  // TODO:video-API 调用
+  // TODO:将项目上传到 github
     divs = ref(null);
 
     dialogVisible=false;
-
-    textarea2='';
 
     time = 0;
 
