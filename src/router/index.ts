@@ -21,12 +21,32 @@ const routes: Array<RouteRecordRaw> = [
     // redirect: '/record',
     children: [{
       path: '/record',
-      name: 'Record',
+      name: 'record',
+      component: () => import('@/views/board/record/index.vue'),
       meta: {
         title: '录像采集',
         ignoreAuth: true,
       },
-      component: () => import('@/views/board/record.vue'),
+      redirect: '/record/list',
+      children: [
+        {
+          path: 'list',
+          name: 'Record',
+          meta: {
+            activeName: 'record',
+          },
+          component: () => import('@/views/board/record/record.vue'),
+        },
+        {
+          path: 'project',
+          name: 'recordProject',
+          meta: {
+            title: '录制项目',
+            ignoreAuth: true,
+          },
+          component: () => import('@/views/board/record/project.vue'),
+        },
+      ],
     },
     {
       path: '/data',

@@ -3,12 +3,12 @@
   <el-container>
     <el-aside class="aside">
         <el-menu
-        background-color="#1D8ce0"
-        text-color = "#fff"
-        active-text-color="#f391a9"
+        text-color="#c6ccd3"
+        active-text-color="#1990ff"
+        default-active="record"
         router
         >
-            <el-menu-item index="record">
+            <el-menu-item index="record" @click="storeRoot">
                 <template #title>
                 <font-awesome-icon class="record-icon" icon="file-video" />
                 <span>数据采集</span>
@@ -33,9 +33,10 @@
 
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useStore } from 'vuex';
 
 @Options(
   {
@@ -45,7 +46,15 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   },
 )
 export default class Layout extends Vue {
+  store = useStore();
 
+  item = null;
+
+  storeRoot(item:any):void {
+    this.item = item;
+    this.store.commit('changemenuName', item);
+    console.log('this is item', item);
+  }
 }
 </script>
 

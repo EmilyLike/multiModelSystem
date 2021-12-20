@@ -1,18 +1,30 @@
 <template>
-<div class="header">
+<div class="header-bar">
     <el-container>
         <el-header class="header">
           <div class="system-title">
+            <!-- <span class="system-icon"> -->
+              <el-icon style="font-size:30px;"><help-filled /></el-icon>
+            <!-- </span> -->
             <span>
-              <font-awesome-icon icon="camera" />
+              多模态数据采集系统
             </span>
-            <span> 多模态数据采集系统</span>
+          </div>
+          <div class="system-bread">
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item v-for="(item,index) in breadlist"
+              :key="index">
+                {{item}}
+              </el-breadcrumb-item>
+
+            </el-breadcrumb>
+
           </div>
           <div class="system-user">
             <span class="user-icon">
               <font-awesome-icon icon="user" />
             </span>
-            <span>用户名</span>
+            <span class="user-number">{{phoneNumber}}</span>
           </div>
         </el-header>
     </el-container>
@@ -22,7 +34,10 @@
 
 <script>
 import { Options, Vue } from 'vue-class-component';
+// import { Watch } from 'vue-property-decorator';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
 
 @Options(
   {
@@ -32,7 +47,24 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   },
 )
 export default class Layout extends Vue {
+  route=useRoute();
 
+  store = useStore();
+
+  get phoneNumber() {
+    return this.store.getters.userInfo;
+  }
+
+  /** 面包屑路径 */
+  get breadlist() {
+    const result = [];
+    for (let i = 1; i < this.route.matched.length;) {
+      if (this.route.matched[i].meta.title) result.push(this.route.matched[i].meta.title);
+      i += 1;
+    }
+    // console.log('this is route matched', this.route.matched);
+    return result;
+  }
 }
 </script>
 
@@ -41,12 +73,23 @@ export default class Layout extends Vue {
   padding:0;
   background: #001629;
   display: flex;
+  align-items: center;
   .system-title {
+    color: #c6ccd3;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
     box-sizing: border-box;
     height: 50px;
-    padding: 0 10px 0 20px;
+    line-height: 50px;
+    padding: 0 10px 0 10px;
     width: 200px;
     background-color: #002240;
+  }
+  .system-bread {
+    font-size: 12px;
+    color: #6b7075;
+    margin-left: 20px;
   }
   .system-user {
     .user-icon {
@@ -55,6 +98,9 @@ export default class Layout extends Vue {
     flex:1;
     padding-right: 20px;
     text-align: right;
+    .user-number {
+      font-size: 14px;
+    }
   }
   line-height: 50px;
   height: 50px;

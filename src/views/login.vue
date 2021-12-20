@@ -104,7 +104,7 @@ export default {
         if (!valid) {
           return;
         }
-        await store.dispatch('EDIT_USER_INFO', form);
+        await store.dispatch('EDIT_USER_INFO', form.phoneNumber);
         router.push({
           path: '/record',
         });

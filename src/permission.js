@@ -6,16 +6,9 @@ router.beforeEach((to, from, next) => {
   if (Object.keys(userInfo).length) {
     if (to.name === 'Login') {
       next({
-        name: 'Record',
+        name: 'record',
       });
     }
     next();
-  } else {
-    if (to.name === 'Login') {
-      next();
-    }
-    next({
-      name: 'Login',
-    });
   }
 });

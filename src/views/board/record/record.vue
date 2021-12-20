@@ -6,37 +6,26 @@
             新建项目
           </el-button>
     </div>
-  <el-dialog
-    v-model="dialogVisible"
-    title="Tips"
-    width="30%"
-    :before-close="handleClose"
-  >
-    <span>This is a message</span>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >Confirm</el-button
-        >
-      </span>
-    </template>
-  </el-dialog>
+    <new-item v-if="dialogVisible" :dialogVisible="dialogVisible" @close="closeDialog"></new-item>
     <div class="all-data">
       <span>全部项目</span>
       <el-divider class="data-divider"></el-divider>
     </div>
   </div>
+  <router-view></router-view>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { ElMessageBox } from 'element-plus';
+import { useRoute } from 'vue-router';
+import NewItem from '@/components/newItem.vue';
 
 @Options(
   {
     components: {
+      NewItem,
       FontAwesomeIcon,
     },
   },
@@ -44,8 +33,13 @@ import { ElMessageBox } from 'element-plus';
 export default class Home extends Vue {
     dialogVisible=false;
 
+    closeDialog() {
+      this.dialogVisible = false;
+    }
+
     handleclick():void {
       this.dialogVisible = true;// 默认页面不显示为false,点击按钮将这个属性变成true
+      console.log('this is dial', this.dialogVisible);
     }
 
     // eslint-disable-next-line class-methods-use-this
