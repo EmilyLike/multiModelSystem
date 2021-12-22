@@ -3,7 +3,16 @@
     <div class="content-board">
       <div class="content-inter">
         <div class="content-input" v-if="showInput">
-          <div v-for="(item, index) in questionList" :key="index">
+          <el-input
+            type="textarea"
+            class="lyric-input"
+            placeholder="请输入内容"
+            v-model="textarea"
+            rows="13"
+            maxlength="5000"
+            show-word-limit
+          />
+          <!-- <div v-for="(item, index) in questionList" :key="index">
             <el-input
               class="lyric-input"
               v-model="item.question"
@@ -11,7 +20,7 @@
               ref="refChartBox"
               style="border:0;"
               @keyup.enter="addRow(index)" />
-          </div>
+          </div> -->
         </div>
       <div class="content-lyric" v-else>
         <div
@@ -22,17 +31,16 @@
         </div>
       </div>
       </div>
-
-      <div class="content-button">
-        <el-button type="primary" v-if="showEdit" @click="editLyric">编辑</el-button>
-        <el-button type="primary" v-else @click="confLyric">确定</el-button>
-      </div>
     </div>
 
     <div class="video-board">
       11111
     </div>
     <div class="record-button">
+      <div class="content-button">
+        <el-button type="primary" v-if="showEdit" @click="editLyric">编辑</el-button>
+        <el-button type="primary" v-else @click="confLyric">确定</el-button>
+      </div>
       <el-button type="primary" @click="revideo">重录</el-button>
       <el-button type="primary" @click="reLast">重录上一句</el-button>
       <el-button type="primary" @click="pauseRecord">{{recordState}}</el-button>
@@ -88,6 +96,8 @@ export default class Home extends Vue {
     dialogVisible=false;
 
     time = 0;
+
+    textarea = '';
 
     showInput = true;
 
@@ -162,21 +172,25 @@ export default class Home extends Vue {
 </script>
 <style lang="scss">
 .project-board{
-  box-sizing: content-box;
+  // box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   padding:20px;
   .content-board {
+    // width:300px;
     flex: 0 0 30%;
     .content-inter {
-
+      background-color: #f2f2f2;
+      overflow: scroll;
       height: 300px;
-      border: 1px solid black;
+      border: 1px solid #f2f2f2;
+      border-radius: 2px;
     }
     .content-lyric {
       text-align: center;
     }
-    .lyric-input .el-input__inner {
+    .lyric-input .el-textarea__inner {
+      // height: 100%;
       border: 0px;//改成0，边框就消失了！
     }
   }
@@ -184,8 +198,9 @@ export default class Home extends Vue {
 
   }
   .video-board {
-    flex: 0 0 70%;
-    border: 1px solid black;
+    flex: 0 0 60%;
+    margin-left: 20px;
+    border: 1px solid #f2f2f2;
   }
   .record-button {
     width: 100%;

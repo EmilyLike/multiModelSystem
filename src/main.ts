@@ -18,12 +18,8 @@ fontawesome.library.add(brands);
 
 const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
-app.use(ElementPlus)
-  .use(router)
-  .use(store)
-  // .component('font-awesome-icon', FontAwesomeIcon)
-  .mount('#app');
-
+app.use(ElementPlus).use(router).use(store).mount('#app');
+console.log('this is router', router);
 // 注册全局组件
 Object.keys(Icons).forEach((key) => {
   app.component(key, Icons[key as keyof typeof Icons]);
