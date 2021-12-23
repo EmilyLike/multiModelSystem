@@ -12,29 +12,22 @@
             maxlength="5000"
             show-word-limit
           />
-          <!-- <div v-for="(item, index) in questionList" :key="index">
-            <el-input
-              class="lyric-input"
-              v-model="item.question"
-              placeholder="| Please input"
-              ref="refChartBox"
-              style="border:0;"
-              @keyup.enter="addRow(index)" />
-          </div> -->
         </div>
       <div class="content-lyric" v-else>
         <div
         :class="`sentence-${index}`"
         :style="lyricStyle(index)"
-        v-for="(item, index) in questionList" :key="index">
-          {{item.question}}
+        v-for="(lyric, index) in lyricList" :key="index">
+          {{lyric}}
         </div>
       </div>
       </div>
     </div>
 
     <div class="video-board">
-      11111
+      <video width="320"
+      height="240"
+      style="width:100%; height:100%;" controls autoplay playsinline ref="video"></video>
     </div>
     <div class="record-button">
       <div class="content-button">
@@ -44,7 +37,7 @@
       <el-button type="primary" @click="revideo">重录</el-button>
       <el-button type="primary" @click="reLast">重录上一句</el-button>
       <el-button type="primary" @click="pauseRecord">{{recordState}}</el-button>
-      <el-button type="primary" @click="endRecord">结束</el-button>
+      <el-button @click="endRecord">结束</el-button>
     </div>
     <div class="list-board">
       <el-table
@@ -75,6 +68,7 @@ import { Options, Vue, setup } from 'vue-class-component';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { ElMessageBox } from 'element-plus';
 import { getCurrentInstance, ref } from 'vue';
+import RecordRTC from 'recordrtc';
 import NewItem from '@/components/newItem.vue';
 // improt {NewItem}
 
@@ -87,10 +81,20 @@ import NewItem from '@/components/newItem.vue';
   },
 )
 export default class Home extends Vue {
-  // TODO: $ref 调用
+  // TODO: $ref 调用 DONE
   // TODO: 歌词区样式
-  // TODO:video-API 调用
-  // TODO:将项目上传到 github
+  // TODO:video-API 调用 完成进度：
+  // 使用 webrtc 完成录制和文件流，可以进行录制和保存。流程、思路待完善。
+  // 尝试失败项目：使用 video 标签同步展示录制。 失败原因：无法控制 video 大小。
+  /**
+   * 思路整理：
+   * 1、使用 canvas 作为录制影像展示。并记录时间。
+   * 2、点击开始录制按钮，使用浏览器自带获取录制和麦克风权限。并通过 recordrtc 记录视频。
+   * 3、在 canvas 中实时展示影响和时间。
+   * 4、点击空格，recordrtc 保存视频，并发出请求。（可先忽略）
+   * 5、点击结束，recordrtc 保存视频，并以 mp4的格式发往后端进行解析。
+   * */
+  // TODO:将项目上传到 github DONE
     divs = ref(null);
 
     dialogVisible=false;
@@ -103,15 +107,57 @@ export default class Home extends Vue {
 
     recordState = '开始'
 
-    questionList= [
-      { question: '' },
-    ];
-
     showEdit= false;
 
     proxy = getCurrentInstance();
 
-    // refQuestion = ref(null);
+    video: HTMLVideoElement | null = null;
+
+    recorder: RecordRTC| null = null;
+
+    mounted():void {
+      this.video = document.querySelector('video');
+    }
+
+    // captureCamera(callback) {
+    //   navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((camera) => {
+    //     callback(camera);
+    //   }).catch((error) => {
+    //     this.$message.error('未找到视频设备');
+    //   });
+    // }
+
+    // stopRecordingCallback() {
+    //   if (this.video) {
+    //     this.video.src = this.video.srcObject = null;
+    //     this.video.muted = false;
+    //     this.video.volume = 1;
+    //     this.video.src = URL.createObjectURL(this.recorder!.getBlob());
+    //     window.open(URL.createObjectURL(this.recorder!.getBlob()));
+    //     this.recorder!.camera.stop();
+    //     this.recorder!.destroy();
+    //     this.recorder = null;
+    //   }
+    // }
+
+    // startRecording() {
+    //   console.log(this.video);
+    //   this.captureCamera((camera) => {
+    //     this.video!.muted = true;
+    //     this.video!.volume = 0;
+    //     this.video!.srcObject = camera;
+    //     this.recorder = new RecordRTC(camera, {
+    //       type: 'video',
+    //     });
+    //     this.recorder.startRecording();
+    //     // release camera on stopRecording
+    //     this.recorder.camera = camera;
+    //   });
+    // }
+
+    // stopRecording() {
+    //   this.recorder && this.recorder.stopRecording(this.stopRecordingCallback);
+    // }
 
     tableData = [
       {
@@ -123,11 +169,13 @@ export default class Home extends Vue {
       },
     ]
 
+    get lyricList():string[] {
+      return this.textarea.split('\n');
+    }
+
     confLyric():void {
       this.showInput = false;
       this.showEdit = true;
-      // eslint-disable-next-line array-callback-return
-      this.questionList.map((q):void => { console.log('this is ddd', q.question); });
     }
 
     editLyric():void {
@@ -149,24 +197,40 @@ export default class Home extends Vue {
       return 'color:red;';
     }
 
-    addRow(index: number):void {
-      // 增加行
-      const obj = { question: '' };
-      this.questionList.splice(index + 1, 0, obj);
+    endRecord():void {
+      if (this.recorder) {
+        this.recorder.stopRecording(() => {
+          const blob = this.recorder!.getBlob();
+          // this.videoFile = this.recorder.getBlob();
 
-      console.log('this is div', this.divs);
+          // 将blob转换为可以供video播放的url
+          const url = window.URL.createObjectURL(blob);
 
-      // 聚焦
-      this.$nextTick(() => {
-        (this.divs as any).question[index + 1].focus();
-      });
+          const downloadLink = document.createElement('a');
+          downloadLink.href = url;
+          downloadLink.download = '录屏.mp4';
+          downloadLink.click();
+        });
+      }
     }
 
     pauseRecord():void {
       console.log('this is record', this.recordState);
-      if (this.recordState === '开始') {
-        this.recordState = '暂停';
+      if (this.recordState === '开始录制') {
+        this.recordState = '暂停录制';
       }
+      navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      }).then(async (stream) => {
+        this.video!.muted = true;
+        // this.video!.volume = 20;
+        this.video!.srcObject = stream;
+        this.recorder = new RecordRTC(stream, {
+          type: 'video',
+        });
+        this.recorder.startRecording();
+      });
     }
 }
 </script>
