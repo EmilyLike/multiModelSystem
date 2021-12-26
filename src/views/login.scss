@@ -1,0 +1,35 @@
+.login {
+  background-color: #f0f3f7;
+  height: 100%;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  .container {
+    flex: 1;
+    margin-top: 150px;
+    .system-intro {
+      padding-bottom: 80px;
+      .title {
+        display: inline-flex;
+        align-items: center;
+        color: #3a3b3b;
+        font-size: 30px;
+        text-align: center;
+        padding-bottom: 10px;
+      }
+      .sub-title {
+        font-size: 15px;
+        color: #979a9c;
+      }
+    }
+
+    .system-input {
+      margin-bottom: 60px;
+    }
+  }
+  .footer {
+    height: 50px;
+    color: #979a9c;
+    margin-top: 20px;
+  }
+}

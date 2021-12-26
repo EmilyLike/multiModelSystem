@@ -1,9 +1,12 @@
-import { createStore } from 'vuex';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-export default createStore({
+Vue.use(Vuex);
+
+export default new Vuex.Store({
   state: {
     userInfo: JSON.parse(sessionStorage.getItem('useInfo') || '{}'),
-    menuName: '123',
+    menuName: '数据采集',
   },
   getters: {
     userInfo: (state) => state.userInfo,
@@ -23,7 +26,7 @@ export default createStore({
     EDIT_USER_INFO({ commit }, payload) {
       return new Promise((res, rej) => {
         commit('changeUserInfo', payload || {});
-        sessionStorage.setItem('useInfo', JSON.stringify(payload));
+        sessionStorage.setItem('userInfo', JSON.stringify(payload));
         res(12233);
       });
     },

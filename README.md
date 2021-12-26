@@ -1,4 +1,4 @@
-# acq-sys-1
+# acq-v2
 
 ## Project setup
 ```

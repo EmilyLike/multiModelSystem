@@ -1,15 +1,14 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import Layout from '@/components/layout.vue';
+import Vue from 'vue';
+import VueRouter, { RouteConfig } from 'vue-router';
+import Layout from '@/components/layout';
 
-const routes: Array<RouteRecordRaw> = [
+Vue.use(VueRouter);
+
+const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/login.vue'),
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: () => ({ path: '/login' }),
+    component: () => import('@/views/login'),
   },
   // {
   //   path: '/',
@@ -22,40 +21,29 @@ const routes: Array<RouteRecordRaw> = [
     children: [{
       path: '/record',
       name: 'record',
-      component: () => import('@/views/board/record/index.vue'),
+      component: () => import('@/views/board/record/record'),
       meta: {
-        title: '录像采集',
+        title: '数据采集',
         ignoreAuth: true,
       },
-      redirect: '/record/list',
-      children: [
-        {
-          path: 'list',
-          name: 'Record',
-          meta: {
-            activeName: 'record',
-          },
-          component: () => import('@/views/board/record/record.vue'),
-        },
-        {
-          path: 'project',
-          name: 'recordProject',
-          meta: {
-            title: '录制项目',
-            ignoreAuth: true,
-          },
-          component: () => import('@/views/board/record/project.vue'),
-        },
-      ],
     },
     {
       path: '/data',
       name: 'data',
       meta: {
-        title: '个人数据',
+        title: '所有数据',
         ignoreAuth: true,
       },
-      component: () => import('@/views/board/data.vue'),
+      component: () => import('@/views/board/data'),
+    },
+    {
+      path: '/project/:id',
+      name: 'recordProject',
+      meta: {
+        title: '录制项目',
+        ignoreAuth: true,
+      },
+      component: () => import('@/views/board/record/project'),
     },
     {
       path: '/settings',
@@ -64,14 +52,15 @@ const routes: Array<RouteRecordRaw> = [
         title: '个人设置',
         ignoreAuth: true,
       },
-      component: () => import('@/views/board/settings.vue'),
+      component: () => import('@/views/board/settings'),
     },
     ],
   },
 ];
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
   routes,
 });
 

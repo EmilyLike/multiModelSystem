@@ -1,0 +1,52 @@
+.project-board {
+  // box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  .content-board {
+    // width:300px;
+    flex: 0 0 30%;
+    .content-inter {
+      background-color: #f2f2f2;
+      overflow: scroll;
+      height: 300px;
+      border: 1px solid #f2f2f2;
+      border-radius: 2px;
+    }
+    .content-lyric {
+      margin-bottom: -28px;
+      height: 100%;
+      text-align: center;
+    }
+    .lyric-input .el-textarea__inner {
+      // height: 100%;
+      border: 0px; //改成0，边框就消失了！
+    }
+  }
+  .content-button {
+  }
+  .video-board {
+    .video-start-background {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f2f2f2;
+      height: 100%;
+      width: 100%;
+    }
+    flex: 0 0 60%;
+    height: 300px;
+    margin-left: 20px;
+    border: 1px solid #f2f2f2;
+  }
+  .record-button {
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    // align-items: center;
+  }
+  .list-board {
+    width: 100%;
+  }
+}
