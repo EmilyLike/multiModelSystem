@@ -1,0 +1,20 @@
+.data-container {
+  margin-top: 20px;
+  margin-left: 20px;
+  .data-header {
+    width: 90%;
+  }
+  .data-table {
+    .table-pag {
+      width: 90%;
+      margin-top: 10px;
+      text-align:center;
+    }
+  }
+  .dropdown, .datepicker, .search {
+    margin-right: 10px;
+  }
+  .data-message {
+    margin: 10px 0;
+  }
+}
