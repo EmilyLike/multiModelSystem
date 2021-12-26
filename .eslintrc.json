@@ -5,8 +5,8 @@
         "node": true
     },
     "extends": [
-        "plugin:vue/essential",
-        "airbnb-base"
+        "plugin:vue/essential"
+        // "airbnb-base"
     ],
     "globals": {
         "Atomics": "readonly",

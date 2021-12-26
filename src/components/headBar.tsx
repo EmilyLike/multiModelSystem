@@ -24,7 +24,7 @@ export default class Layout extends Vue {
           <div class="system-bread">
             <el-breadcrumb separator="/">
               {
-                this.breadlist.map((item, index) => (
+                this.breadlist.map((item: any, index: any) => (
                     <el-breadcrumb-item key={index}>
                     {item}
                   </el-breadcrumb-item>
@@ -34,10 +34,14 @@ export default class Layout extends Vue {
 
           </div>
           <div class="system-user">
-            <span class="user-icon">
-              <i class="el-icon-user"></i>
-            </span>
-            <span class="user-number">{this.phoneNumber}</span>
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+              <i class="el-icon-user user-icon"></i>{this.phoneNumber}
+              </span>
+              <el-dropdown-menu>
+                <el-dropdown-item nativeOnClick={this.handleCommand}>退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </el-header>
     </el-container>
@@ -48,7 +52,6 @@ export default class Layout extends Vue {
 
   get phoneNumber() {
     return sessionStorage.getItem('userInfo')?.replaceAll('"','');
-    // return this.$store.getters.userInfo;
   }
 
   /** 面包屑路径 */
@@ -56,11 +59,14 @@ export default class Layout extends Vue {
     const result = [];
     const {menuName} = this.$store.getters;
     const menuList = menuName.split('/');
-    // for (let i = 1; i < this.$route.matched.length;) {
-    //   if (this.$route.matched[i].meta.title) result.push(this.$route.matched[i].meta.title);
-    //   i += 1;
-    // }
-    // console.log('this is route matched', this.route.matched);
     return menuList;
+  }
+
+  handleCommand() {
+    console.log('this is commang');
+    sessionStorage.removeItem('userInfo');
+    this.$router.push({
+      name:'Login'
+    })
   }
 }
